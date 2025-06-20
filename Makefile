@@ -31,13 +31,14 @@ JAVA_SOURCES = $(wildcard *.java)
 JAVA_CLASSES = $(patsubst %.java, target/classes/com/llama4j/%.class, $(JAVA_SOURCES))
 
 # Bundle all classes in a jar
-$(JAR_FILE): $(JAVA_CLASSES) LICENSE
+$(JAR_FILE): compile LICENSE
 	$(JAR) -cvfe $(JAR_FILE) $(JAVA_MAIN_CLASS) LICENSE -C target/classes .
 
 jar: $(JAR_FILE)
 
 # Compile the Java source files
-compile: $(JAVA_CLASSES)
+compile: target/classes
+	$(JAVAC) $(JAVA_COMPILE_OPTIONS) -d target/classes $(JAVA_SOURCES)
 
 # Prints the command to run the Java main class
 run-command:
@@ -53,8 +54,6 @@ clean:
 	rm $(JAR_FILE) $(NATIVE_FILE)
 
 # Compile the Java source files
-target/classes/com/llama4j/%.class: %.java
-	$(JAVAC) $(JAVA_COMPILE_OPTIONS) -d target/classes $<
 
 # Create the target directory
 target/classes:
